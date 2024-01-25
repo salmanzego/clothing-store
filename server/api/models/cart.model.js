@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const cartSchema = new Schema({
-    customerId: { type: String, required: true },
-    products: { type: Array, required: true}
+    customerId: { type: Schema.ObjectId, required: true },
+    products: [{ _id: { type: Schema.ObjectId , required: true }, quantity: { type: Number , required: true } }]
 },{
     toJSON:{
         virtuals:true
@@ -15,3 +15,4 @@ const cartSchema = new Schema({
 
 const CartModel = mongoose.model('CartModel', cartSchema);
 module.exports = CartModel;
+

@@ -5,6 +5,13 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const dotenv =  require('dotenv');
+
+
+app.use(cors({
+    credentials : true,
+    origin:["*"]
+}));
+
 dotenv.config();
 
 const dbConnect = require('./api/configs/database_config');
@@ -19,10 +26,6 @@ const admProdRoutes = require('./api/routes/admin/product');
 const admOrderRoutes = require('./api/routes/admin/order');
 const admUserRoutes = require('./api/routes/admin/user');
 
-app.use(cors({
-    credentials : true,
-    origin:["https://localhost:4200"]
-}));
 app.use(cookieParser());
 
 app.use(morgan('dev'));

@@ -6,7 +6,6 @@ const jwt = require('json-web-token');
 const verifyUser = async (req, res, next) => {
     try {
         const cookie = req.cookies['userjwt'];
-        console.log("hai");
         jwt.decode(process.env.USER_JWT_KEY, cookie, (err, payload, header) => {
             if (err) {
                 console.log("error");
