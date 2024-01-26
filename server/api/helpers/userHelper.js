@@ -153,7 +153,7 @@ module.exports = {
                     totalAmount: { $sum: { $multiply: ["$product.price", "$product.quantity"] } }
                 })
                 .then(async (docs) => {
-                    
+
                     const products = await Promise.all(docs[0].products.map(async (product) => {
                         const imgUrl = await adminHelper.getProductImg(product.filename);
                         if (imgUrl) {
@@ -168,6 +168,18 @@ module.exports = {
                 }).catch(err => {
                     reject(err);
                 })
+        })
+    },
+    deleteFromCart: (userId, prodId) => {
+        return new Promise((resolve, reject) => {
+            CartModel.updateOne({ customerId: new mongoose.Types.ObjectId(userId) },
+                { $pull: { products: { _id: new mongoose.Types.ObjectId(prodId) } } }
+            ).then(docs => {
+                console.log(docs);
+                resolve({ msg: "Product Deleted" });
+            }).catch(err => {
+                console.log(err);
+            });
         })
     }
 }

@@ -12,7 +12,7 @@ router.get('/', verifyUser, (req, res, next) => {
     }).catch(err => {
         res.status(404).json(err)
     })
-})
+});
 
 router.post('/:id', verifyUser, (req, res, next) => {
     userHelper.addToCart(req.params.id, req.user._id).then((result) => {
@@ -20,7 +20,7 @@ router.post('/:id', verifyUser, (req, res, next) => {
     }).catch(err => {
         res.status(404).json(err)
     })
-})
+});
 
 router.post('/change-quantity/:id', verifyUser, (req, res, next) => {
     const info = {
@@ -32,10 +32,16 @@ router.post('/change-quantity/:id', verifyUser, (req, res, next) => {
     userHelper.changeQuantity(info).then((result) => {
         res.status(200).json(result);
     }).catch(err => {
-        res.status(404).json(err)
-    })
-})
+        res.status(404).json(err);
+    });
+});
 
-
+router.post('/delete-product/:id', verifyUser, (req, res) => {
+    userHelper.deleteFromCart(req.user._id, req.params.id).then((response)=>{
+        res.status(200).json(response);
+    }).catch((err)=>{
+        res.status(404).json(err);
+    });
+});
 
 module.exports = router;
