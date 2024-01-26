@@ -4,13 +4,15 @@ const cors = require('cors');
 const app = express();
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
-const dotenv =  require('dotenv');
+const dotenv = require('dotenv');
 
 
 app.use(cors({
-    credentials : true,
-    origin:["*"]
+    credentials: true,
+    origin: "http://localhost:8000"
 }));
+
+app.options('*', cors());
 
 dotenv.config();
 
@@ -36,11 +38,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/orders',orderRoutes);
-app.use('/api/cart',cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/api/admin/products', admProdRoutes);
 app.use('/api/admin/orders', admOrderRoutes);
 app.use('/api/admin/users', admUserRoutes);
 
 
-module.exports = app ;
+module.exports = app;

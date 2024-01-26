@@ -6,13 +6,13 @@ var verifyUser = require('./user');
 verifyUser = verifyUser.user;
 
 
-router.get('/', verifyUser, (req, res, next) => {
+router.get('/', (req, res, next) => {
     adminHelper.getAllProducts().then(async (products) => {
         const prods = await Promise.all(products.map(async (product) => {
             const imgUrl = await adminHelper.getProductImg(product.filename);
-            if(imgUrl){
+            if (imgUrl) {
                 newProd = { ...product.toJSON(), imgUrl: imgUrl };
-            }else{
+            } else {
                 newProd = { ...product.toJSON(), imgUrl: '' };
             }
             return newProd;
@@ -25,17 +25,17 @@ router.get('/', verifyUser, (req, res, next) => {
     });
 });
 
-router.get('/:id', verifyUser, (req, res, next) => {
-    adminHelper.getProductById(req.params.id).then(async (product)=>{
+router.get('/:id', (req, res, next) => {
+    adminHelper.getProductById(req.params.id).then(async (product) => {
         const imgUrl = await adminHelper.getProductImg(product.filename);
         let prods;
-        if(imgUrl){
+        if (imgUrl) {
             prods = { ...product.toJSON(), imgUrl: imgUrl };
-        }else{
+        } else {
             prods = { ...product.toJSON(), imgUrl: '' };
         }
         res.status(200).json(prods);
-    }).catch(err =>{
+    }).catch(err => {
         res.status(404).json({
             msg: err
         });
