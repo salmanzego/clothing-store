@@ -8,7 +8,6 @@ const verifyUser = async (req, res, next) => {
         const cookie = req.cookies['userjwt'];
         jwt.decode(process.env.USER_JWT_KEY, cookie, (err, payload, header) => {
             if (err) {
-                console.log("error");
                 res.status(302).json({
                     redirectTo: '/login',
                     error: err
@@ -27,9 +26,19 @@ const verifyUser = async (req, res, next) => {
     }
 }
 
-router.post('/signIn', (req, res) => {
+router.post('/signup', (req, res) => {
     userHelper.createUser(req.body).then((result) => {
-        res.status(200).json(result);
+        if (result) {
+            res.cookie('userjwt', result.token, {
+                httpOnly: true,
+                maxAge: 60 * 1000
+            });
+            res.status(302).json(result);
+        } else {
+            res.status(404).json({
+                msg: err
+            });
+        }
     }).catch((err) => {
         res.status(404).json({
             msg: err
@@ -38,11 +47,11 @@ router.post('/signIn', (req, res) => {
 })
 
 router.post('/login', (req, res, next) => {
-    if(req.cookies['userjwt']){
+    if (req.cookies['userjwt']) {
         res.status(302).json({
-            redirectTo: '/'
+            redirectTo: '/',
         });
-    }else{
+    } else {
         userHelper.doLogin(req.body).then((token) => {
             res.cookie('userjwt', token, {
                 httpOnly: true,
@@ -58,7 +67,7 @@ router.post('/login', (req, res, next) => {
             });
         })
     }
-    
+
 })
 
 module.exports = router;

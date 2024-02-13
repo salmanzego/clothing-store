@@ -9,7 +9,6 @@ const adminHelper = require("./adminHelper");
 module.exports = {
     createUser: (user) => {
         return new Promise((resolve, reject) => {
-            console.log(user.password);
             bcrypt.hash(user.password, 9, async (err, hash) => {
                 if (err) {
                     reject(err);
@@ -17,9 +16,21 @@ module.exports = {
                     user.password = hash;
                     const newUser = new UserModel(user);
                     const dbUser = await newUser.save();
-                    console.log(dbUser);
+
                     if (dbUser) {
-                        resolve({ msg: 'account created successfully', user: dbUser });
+                        const payLoad = {
+                            _id: dbUser._id,
+                            userName: dbUser.userName,
+                            email: dbUser.email,
+                            isAdmin: false
+                        }
+                        jwt.encode(process.env.USER_JWT_KEY, payLoad, (err, token) => {
+                            if (err) {
+                                reject({ msg: 'Some error on storing cookies' });
+                            } else {
+                                resolve({ msg: 'account created successfully', redirectTo: '/', token: token });
+                            }
+                        });
                     } else {
                         reject({ msg: 'Some error on creating new account' });
                     }
@@ -36,6 +47,7 @@ module.exports = {
                         const payLoad = {
                             _id: user._id,
                             email: user.email,
+                            userName: user.userName,
                             isAdmin: false
                         }
                         jwt.encode(process.env.USER_JWT_KEY, payLoad, (err, token) => {
